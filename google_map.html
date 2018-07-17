@@ -1,0 +1,75 @@
+<html>
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js/key=<%=GOOGLE_API_KEY%>"></script>
+	</head>
+	<body>
+		<div id="map"></div>
+	</body>
+</html>
+<script>
+				var center = new google.maps.LatLng(37.4060365, 126.9652058);
+        var map_el = document.getElementById('map');
+        var map = new google.maps.Map(map_el, {
+          zoom : 10,
+          center: center
+        });
+        var marker = new google.maps.Marker({
+          map : map,
+          position : center
+        });
+        map.addListener('click', function(e){
+          var address = e.latLng.lat() + ',' +e.latLng.lng();
+          var latitude = e.latLng.lat();
+          var longitude = e.latLng.lng();
+          $('#geometry').val(address);
+          $('#latitude').val(latitude);
+          $('#longitude').val(longitude);
+
+          marker.setPosition(e.latLng);
+          geocode(address, function(results){
+            if(results.length == 0){
+              $('#address_span').html('주소 검색 결과가 없습니다.');
+              $('#address').val('');
+            }else{
+              $('#address_span').html(results[0].formatted_address);
+              $('#address').val(results[0].formatted_address);
+            }
+          })
+        });
+        $('#search_address').keypress(function(e){
+          if(e.keyCode == '13'){
+            e.preventDefault();
+            console.log('#input_value');
+            var q = $('#input_value').val();
+            if( q.length > 0){
+              geocode(q, function(results){
+                if( results.length ==0 ){
+                  $('#address_span').html('검색 결과가 없습니다.');
+                  $('#address').val('');
+                }else{
+                  console.log(results);
+                  $('#address_span').html(results[0].formatted_address);
+                  var loc = new google.maps.LatLng(results[0].geometry.location.lat, results[0].geometry.location.lng);
+                  map.setCenter(loc);
+                  map.setZoom(15);
+                  marker.setPosition(loc);
+                  $('#latitude').val(loc.lat());
+                  $('#longitude').val(loc.lng());
+                  $('#address').val(results[0].formatted_address);
+                }
+              })
+            }
+          }
+        })
+        function geocode(address, callback) {
+          jQuery.get('https://maps.googleapis.com/maps/api/geocode/json', {
+            address: address,
+          //	key: '{{GOOGLE_MAP_API_KEY}}' // FIXME: Google Maps JavaScript API 키 적용
+            }).done(function(res) {
+              callback(res.results);
+            }).fail(function() {
+              alert('error');
+          });
+        };
+</script>
