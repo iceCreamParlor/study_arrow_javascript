@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div id="arrow_0" style="position:absolute;">
+      <div id="triangle_0" style="position:absolute;"></div>
+    </div>
+  </body>
+</html>
+
+<script>
+createLine(500, 500, 1000, 1000, 0);
+
+function createLine(x2, y2, x1, y1, index){
+
+  var distance = Math.sqrt( ((x1-x2)*(x1-x2)) + ((y1-y2)*(y1-y2)) );
+  // 중간 지점은 선을 회전시킬 때 쓰이게 된다.
+  var xMid = (x1+x2) / 2;
+  var yMid = (y1+y2) / 2;
+  // 라디안, 도로 두 점의 각도를 구한다.
+  salopeInRadian = Math.atan2(y1 - y2, x1 - x2);
+  salopeInDegrees = (salopeInRadian * 180) / Math.PI;
+
+  var line = document.getElementById('arrow_' + index);
+  line.style.width = distance +"px";
+  line.style.top = yMid + "px";
+  line.style.left = xMid - ( distance / 5 ) + "px";
+  line.style.transform = "rotate(" + salopeInDegrees + "deg)";
+  // line.style.height = distance / 20 + "px";
+  line.style.height = "3px";
+
+  var triangle = document.getElementById('triangle_' + index);
+
+  triangle.style.width = "0px";
+  triangle.style.height = "0px";
+  triangle.style.left = distance + "px";
+  // triangle.style.borderTop = Math.round(distance / 10) + "px solid transparent";
+  // triangle.style.borderLeft = Math.round(distance / 5) + "px solid #E44B06";
+  // triangle.style.borderBottom = Math.round(distance / 10) + "px solid transparent";
+
+  triangle.style.borderTop = "4px solid transparent";
+  triangle.style.borderLeft = "8px solid #E44B06";
+  triangle.style.borderBottom = "4px solid transparent";
+
+  // triangle.style.top = distance / 10 * -1 + distance / 40 + "px";
+  triangle.style.top = "-2px";
+  triangle.marginLeft = distance / 40 + "px";
+
+}
+</script>
